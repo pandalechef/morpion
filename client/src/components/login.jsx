@@ -1,33 +1,67 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { Grid, TextField, Button, Paper } from '@material-ui/core';
 
-import { updateUtilisateur } from '../actions/authentificationAction';
-
-const Login = props => {
-  if (props.utilisateur !== null) {
-    const { from } = props.location.state || { from: { pathname: '/' } };
-    return <Redirect to={from} />;
+class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { nomJoueur: '', isOnBlur: false };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleOnBlur = this.handleOnBlur.bind(this);
   }
-  return (
-    <div>
-      <h1>Login</h1>
-      <button
-        onClick={() => {
-          props.updateUtilisateur('toto');
-        }}
+
+  handleChange(e) {
+    this.setState({ nomJoueur: e.currentTarget.value });
+  }
+
+  handleOnBlur() {
+    this.setState({ isOnBlur: true });
+  }
+
+  render() {
+    const { nomJoueur, isOnBlur } = this.state;
+
+    if (this.props.utilisateur !== null) {
+      const { from } = this.props.location.state || { from: { pathname: '/' } };
+      return <Redirect to={from} />;
+    }
+    return (
+      <Grid
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justify="center"
+        style={{ minHeight: '100vh', backgroundColor: '#f1f2f6' }}
       >
-        Login
-      </button>
-    </div>
-  );
-};
-
-export default connect(
-  state => ({
-    utilisateur: state.utilisateur
-  }),
-  {
-    updateUtilisateur
+        <Paper style={{ padding: '10px' }}>
+          <Grid item xs={12}>
+            <TextField
+              id="standard-name"
+              required
+              label="Nom du joueur"
+              onChange={this.handleChange}
+              value={nomJoueur}
+              margin="normal"
+              error={isOnBlur && nomJoueur === ''}
+              onBlur={this.handleOnBlur}
+              helperText={
+                isOnBlur && nomJoueur === '' ? 'Champs obligatoire' : ''
+              }
+            />
+          </Grid>
+          <Grid item xs={12} style={{ marginTop: '15px' }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.props.updateUtilisateur(nomJoueur)}
+            >
+              Valider
+            </Button>
+          </Grid>
+        </Paper>
+      </Grid>
+    );
   }
-)(Login);
+}
+export default Login;

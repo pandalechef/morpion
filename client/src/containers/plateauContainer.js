@@ -10,10 +10,10 @@ const getJoueursFromParam = search => {
 const mapStateToProps = (state, props) => {
   const { j2 } = getJoueursFromParam(props.location.search);
   return {
-    nomJoueur: state.nomJoueur,
+    utilisateur: state.utilisateur,
     partie: state.parties.filter(
       p =>
-        (state.nomJoueur === p.j1 || state.nomJoueur === p.j2) &&
+        (state.utilisateur === p.j1 || state.utilisateur === p.j2) &&
         (j2 === p.j1 || j2 === p.j2)
     )[0]
   };

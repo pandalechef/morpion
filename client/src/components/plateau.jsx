@@ -41,13 +41,20 @@ export default class Plateau extends Component {
 
   renderSquare(i) {
     const {
-      nomJoueur,
+      utilisateur,
       partie: { joueurEnCours }
     } = this.props;
     return (
       <Case
         valeur={this.props.partie.squares[i]}
-        onClick={() => this.props.handleClick(i, this.props.partie.squares[i], nomJoueur, joueurEnCours)}
+        onClick={() =>
+          this.props.handleClick(
+            i,
+            this.props.partie.squares[i],
+            utilisateur,
+            joueurEnCours
+          )
+        }
       />
     );
   }

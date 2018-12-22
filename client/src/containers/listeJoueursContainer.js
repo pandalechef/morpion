@@ -3,7 +3,7 @@ import { updateListeJoueurs } from '../actions/listeJoueurs';
 import ListeJoueurs from '../components/listeJoueurs';
 
 const mapStateToProps = state => ({
-  nomJoueur: state.nomJoueur,
+  utilisateur: state.utilisateur,
   listeJoueurs: state.listeJoueurs
 });
 

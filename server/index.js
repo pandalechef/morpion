@@ -49,11 +49,11 @@ io.on('connection', function(socket) {
       joueurs.filter(j => j.nom.toLowerCase() === nomJoueur.toLowerCase())
         .length === 0
     ) {
-      joueurs.push({ id: socket.id, nom: nomJoueur });
+      joueurs.push({ id: socket.id, nom: nomJoueur, online: true });
     } else {
       joueurs = [
         ...joueurs.filter(j => j.nom.toLowerCase() !== nomJoueur.toLowerCase()),
-        { id: socket.id, nom: nomJoueur }
+        { id: socket.id, nom: nomJoueur, online: true }
       ];
     }
   });
@@ -89,29 +89,31 @@ io.on('connection', function(socket) {
     if (partie) {
       updatePartie(partie, caseCochee, j1, j2);
       envoyerNotification(j1, j2, partie);
-
-      // const joueur1 = joueurs.filter(
-
-      //   j => j.nom.toLowerCase() === j1.toLowerCase()
-
-      // )[0];
-
-      // const joueur2 = joueurs.filter(
-
-      //   j => j.nom.toLowerCase() === j2.toLowerCase()
-
-      // )[0];
-
-      // if (joueur1 !== undefined && joueur2 !== undefined) {
-
-      //   io.to(joueur1.id).to(joueur2.id).emit('charger partie', partie);
-
-      // }
     }
+  });
+
+  socket.on('deconnexion', function() {
+    console.log('user deconnexion');
+    joueurs = joueurs.map(j => {
+      if (j.id === socket.id) {
+        return { ...j, online: false };
+      } else {
+        return j;
+      }
+    });
+    io.emit('listeJoueurs', joueurs);
   });
 
   socket.on('disconnect', function() {
     console.log('user disconnected');
+    joueurs = joueurs.map(j => {
+      if (j.id === socket.id) {
+        return { ...j, online: false };
+      } else {
+        return j;
+      }
+    });
+    io.emit('listeJoueurs', joueurs);
   });
 });
 
