@@ -1,23 +1,31 @@
 import React from 'react';
-import { Route, Redirect, Switch } from 'react-router-dom';
-import NomJoueur from '../containers/nomJoueurContainer';
-import Plateau from '../containers/plateauContainer';
-import SocketContextProvider from './socketContextProvider';
-import withSocketContext from './withSocketContext';
-import ListeJoueurs from '../containers/listeJoueursContainer';
-import Header from '../containers/headerContainer';
+import { Route, Switch, withRouter } from 'react-router-dom';
+import Login from './login';
+import { connect } from 'react-redux';
+import { updateUtilisateur } from '../actions/authentificationAction';
+import Morpion from './morpion';
+import AuthRoute from './authRoute';
 
-export default () => (
-  <SocketContextProvider>
-    <header>
-      <Header />
-    </header>
+const Main = props => {
+  console.log(props);
+  // if (props.utilisateur === null) {
+  //   return <h1>Chargement en cours</h1>;
+  // }
+  return (
     <Switch>
-      <Route path="/" exact component={withSocketContext(NomJoueur)} />
-      <Route path="/plateau" component={withSocketContext(Plateau)} />
-      <Route path="/morpion" component={withSocketContext(Plateau)} />
-      <Route path="/joueurs" component={withSocketContext(ListeJoueurs)} />
-      <Redirect to="/" />
+      <Route path="/login/" component={Login} />
+      <AuthRoute component={Morpion} />
     </Switch>
-  </SocketContextProvider>
+  );
+};
+
+export default withRouter(
+  connect(
+    state => ({
+      utilisateur: state.utilisateur
+    }),
+    {
+      updateUtilisateur
+    }
+  )(Main)
 );
