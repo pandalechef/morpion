@@ -1,18 +1,18 @@
-import NomJoueur from '../components/nomJoueur';
+import Login from '../components/login';
 import { connect } from 'react-redux';
 import { updateUtilisateur } from '../actions/authentificationAction';
 const mapStateToProps = state => ({
   utilisateur: state.utilisateur
 });
 const mapDispatchToProps = (dispatch, props) => ({
-  updateNomJoueur: nomJoueur => {
-    props.socket.emit('nouveau joueur', nomJoueur);
+  updateUtilisateur: utilisateur => {
+    props.socket.emit('nouveau joueur', utilisateur);
     props.history.push('/joueurs');
-    dispatch(updateUtilisateur(nomJoueur));
+    dispatch(updateUtilisateur(utilisateur));
   }
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(NomJoueur);
+)(Login);
