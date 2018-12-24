@@ -73,6 +73,31 @@ const updatePartie = (partie, caseCochee, j1, j2) => {
   parties = [...parties.filter(p => !matchPartieJoueurs(p, j1, j2)), partie];
 };
 
+const supprimerPartiesTerminee = (j1, j2) => {
+  const partieEnCours = parties.filter(p => matchPartieJoueurs(p, j1, j2));
+  if (
+    partieEnCours[0] &&
+    (partieEnCours[0].vainqueur != null || partieEnCours[0].egalite)
+  ) {
+    parties = parties.filter(
+      p => !(p.j1 === partieEnCours[0].j1 && p.j2 === partieEnCours[0].j2)
+    );
+  }
+};
+
+const trouverPartieACharger = (j1, j2, nouvellePartie) => {
+  const partieEnCours = parties.filter(p => matchPartieJoueurs(p, j1, j2));
+  let partieACharger;
+  if (partieEnCours.length === 1) {
+    partieACharger = partieEnCours[0];
+  } else {
+    partieACharger = nouvellePartie;
+    console.log('ajout nouvelle partie');
+    parties.push(partieACharger);
+  }
+  return partieACharger;
+};
+
 io.on('connection', function(socket) {
   console.log('a user connected');
 
@@ -102,17 +127,12 @@ io.on('connection', function(socket) {
       joueurEnCours: Math.random() > 0.5 ? msg.j1 : msg.j2,
       vainqueur: null
     };
-    const partieEnCours = parties.filter(p =>
-      matchPartieJoueurs(p, msg.j1, msg.j2)
+    supprimerPartiesTerminee(msg.j1, msg.j2);
+    const partieACharger = trouverPartieACharger(
+      msg.j1,
+      msg.j2,
+      nouvellePartie
     );
-    let partieACharger;
-    if (partieEnCours.length === 1) {
-      partieACharger = partieEnCours[0];
-    } else {
-      partieACharger = nouvellePartie;
-      console.log('ajout nouvelle partie');
-      parties.push(partieACharger);
-    }
     envoyerNotification(msg.j1, msg.j2, partieACharger);
   });
 
