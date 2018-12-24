@@ -73,12 +73,24 @@ const updatePartie = (partie, caseCochee, j1, j2) => {
   parties = [...parties.filter(p => !matchPartieJoueurs(p, j1, j2)), partie];
 };
 
+const updateScoreJoueurs = partie => {
+  if (partie.vainqueur) {
+    // joueurs = [
+    //   ...joueurs.filter(j => !(j.nom === partie.j1 || j.nom === partie.j2)),
+    //   ...joueurs
+    //     .filter(j => j.nom === partie.j1 || j.nom === partie.j2)
+    //     .map(j => (j.score = j.score + 1 || 1))
+    // ];
+  }
+};
+
 const supprimerPartiesTerminee = (j1, j2) => {
   const partieEnCours = parties.filter(p => matchPartieJoueurs(p, j1, j2));
   if (
     partieEnCours[0] &&
     (partieEnCours[0].vainqueur != null || partieEnCours[0].egalite)
   ) {
+    updateScoreJoueurs(partieEnCours[0]);
     parties = parties.filter(
       p => !(p.j1 === partieEnCours[0].j1 && p.j2 === partieEnCours[0].j2)
     );
