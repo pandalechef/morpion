@@ -27,9 +27,11 @@ const mapDispatchToProps = (dispatch, props) => ({
       dispatch(chargerPartie(partie));
     });
   },
-  handleClick: (caseCochee, valeur, joueur, joueurEnCours) => {
+  handleClick: (caseCochee, valeur, joueur, joueurEnCours, vainqueur) => {
+    console.log(props);
     if (
       valeur === null &&
+      vainqueur == null &&
       joueur.toLowerCase() === joueurEnCours.toLowerCase()
     ) {
       const { j1, j2 } = getJoueursFromParam(props.location.search);

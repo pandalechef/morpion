@@ -21,22 +21,55 @@ const matchPartieJoueurs = (partie, j1, j2) =>
     partie.j2.toLowerCase() === j2.toLowerCase());
 
 const envoyerNotification = (joueur1, joueur2, partieACharger) => {
-  const j1 = joueurs.filter(j => j.nom.toLowerCase() === joueur1.toLowerCase())[
-    0
-  ];
-  const j2 = joueurs.filter(j => j.nom.toLowerCase() === joueur2.toLowerCase())[
-    0
-  ];
+  const j1 = joueurs.filter(
+    j => j.nom.toLowerCase() === joueur1.toLowerCase()
+  )[0];
+  const j2 = joueurs.filter(
+    j => j.nom.toLowerCase() === joueur2.toLowerCase()
+  )[0];
   if (j1 !== undefined && j2 !== undefined) {
-    io.to(j1.id).to(j2.id).emit('charger partie', partieACharger);
+    io.to(j1.id)
+      .to(j2.id)
+      .emit('charger partie', partieACharger);
   }
+};
+
+const calculateWinner = squares => {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
 };
 
 const updatePartie = (partie, caseCochee, j1, j2) => {
   partie.squares[caseCochee] = partie.joueurEnCours;
-  partie.joueurEnCours = partie.joueurEnCours.toLowerCase() === j1.toLowerCase()
-    ? j2.toLowerCase()
-    : j1.toLowerCase();
+  const vainqueur = calculateWinner(partie.squares);
+  if (vainqueur) {
+    partie.vainqueur = vainqueur;
+    partie.joueurEnCours = null;
+  } else if (partie.squares.filter(c => c === null).length === 0) {
+    partie.vainqueur = null;
+    partie.joueurEnCours = null;
+    partie.egalite = true;
+  } else {
+    partie.joueurEnCours =
+      partie.joueurEnCours.toLowerCase() === j1.toLowerCase()
+        ? j2.toLowerCase()
+        : j1.toLowerCase();
+  }
   parties = [...parties.filter(p => !matchPartieJoueurs(p, j1, j2)), partie];
 };
 
@@ -66,7 +99,8 @@ io.on('connection', function(socket) {
       squares: Array(9).fill(null),
       j1: msg.j1,
       j2: msg.j2,
-      joueurEnCours: Math.random() > 0.5 ? msg.j1 : msg.j2
+      joueurEnCours: Math.random() > 0.5 ? msg.j1 : msg.j2,
+      vainqueur: null
     };
     const partieEnCours = parties.filter(p =>
       matchPartieJoueurs(p, msg.j1, msg.j2)

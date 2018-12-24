@@ -2,47 +2,15 @@ import React, { Component } from 'react';
 import { Grid } from '@material-ui/core';
 import Case from './case';
 
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
-}
-
 export default class Plateau extends Component {
   componentDidMount() {
     this.props.chargerPartie();
   }
 
-  // handleClick(i) {
-  //   const squares = this.state.squares.slice();
-  //   if (calculateWinner(squares) || squares[i]) {
-  //     return;
-  //   }
-  //   squares[i] = this.state.xIsNext ? 'X' : 'O';
-  //   this.setState({
-  //     squares: squares,
-  //     xIsNext: !this.state.xIsNext
-  //   });
-  // }
-
   renderSquare(i) {
     const {
       utilisateur,
-      partie: { joueurEnCours }
+      partie: { joueurEnCours, vainqueur }
     } = this.props;
     return (
       <Case
@@ -52,7 +20,8 @@ export default class Plateau extends Component {
             i,
             this.props.partie.squares[i],
             utilisateur,
-            joueurEnCours
+            joueurEnCours,
+            vainqueur
           )
         }
       />
@@ -63,18 +32,20 @@ export default class Plateau extends Component {
     if (!this.props.partie) {
       return <div>Chargement en cours</div>;
     }
-    const winner = calculateWinner(this.props.partie.squares);
-    let status;
-    if (winner) {
-      status = 'Winner: ' + winner;
+    const { egalite, vainqueur } = this.props.partie;
+    let statut;
+    if (egalite) {
+      statut = 'Egalité!';
+    } else if (vainqueur) {
+      statut = 'Le gagnant est: ' + vainqueur;
     } else {
-      status = "C'est à " + this.props.partie.joueurEnCours + ' de jouer';
+      statut = "C'est à " + this.props.partie.joueurEnCours + ' de jouer';
     }
 
     return (
       <Grid container>
         <Grid item xs={12}>
-          {status}
+          {statut}
         </Grid>
         <Grid item xs={12}>
           {this.renderSquare(0)}
