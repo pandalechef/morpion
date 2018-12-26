@@ -183,10 +183,11 @@ io.on('connection', function(socket) {
     io.emit('listeJoueurs', joueurs);
   });
 });
-
-http.listen(4000, function() {
-  console.log('listening on *:4000');
+const port = process.env.port || 5000;
+http.listen(port, function() {
+  console.log('listening on *:5000');
 });
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname + '/client/build/index.html'));
 });
