@@ -1,6 +1,7 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var path = require('path');
 let joueurs = [];
 let parties = [];
 
@@ -186,7 +187,9 @@ io.on('connection', function(socket) {
 http.listen(4000, function() {
   console.log('listening on *:4000');
 });
-
-app.get('/parties', function(req, res) {
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/client/build/index.html'));
+});
+app.get('api/parties', function(req, res) {
   res.send(parties);
 });
