@@ -2,12 +2,22 @@ var express = require('express');
 var socketIO = require('socket.io');
 var path = require('path');
 const PORT = process.env.PORT || 4000;
-const INDEX = path.join(__dirname + '/client/build/index.html');
 let joueurs = [];
 let parties = [];
 
+let root = path.join(__dirname, './client/build/');
 const server = express()
-  .use((req, res) => res.sendFile(INDEX))
+  .use(express.static(root))
+  .use((req, res, next) => {
+    if (
+      req.method === 'GET' &&
+      req.accepts('html') &&
+      !req.is('json') &&
+      !req.path.includes('.')
+    ) {
+      res.sendFile('index.html', { root });
+    } else next();
+  })
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const io = socketIO(server);
