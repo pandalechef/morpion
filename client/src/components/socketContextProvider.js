@@ -6,7 +6,7 @@ export const SocketContext = React.createContext('SocketContext');
 class Socket extends Component {
   constructor(props) {
     super(props);
-    this.socket = io('http://localhost:4000/');
+    this.socket = io();
     this.socket.on('chat message', msg =>
       this.setState({ messages: this.state.messages.concat(msg) })
     );

@@ -1,9 +1,16 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var express = require('express');
+var socketIO = require('socket.io');
 var path = require('path');
+const PORT = process.env.PORT || 4000;
+const INDEX = path.join(__dirname + '/client/build/index.html');
 let joueurs = [];
 let parties = [];
+
+const server = express()
+  .use((req, res) => res.sendFile(INDEX))
+  .listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+const io = socketIO(server);
 
 const trouverPartie = (j1, j2) => {
   const partie = parties.filter(p => matchPartieJoueurs(p, j1, j2));
@@ -22,16 +29,14 @@ const matchPartieJoueurs = (partie, j1, j2) =>
     partie.j2.toLowerCase() === j2.toLowerCase());
 
 const envoyerNotification = (joueur1, joueur2, partieACharger) => {
-  const j1 = joueurs.filter(
-    j => j.nom.toLowerCase() === joueur1.toLowerCase()
-  )[0];
-  const j2 = joueurs.filter(
-    j => j.nom.toLowerCase() === joueur2.toLowerCase()
-  )[0];
+  const j1 = joueurs.filter(j => j.nom.toLowerCase() === joueur1.toLowerCase())[
+    0
+  ];
+  const j2 = joueurs.filter(j => j.nom.toLowerCase() === joueur2.toLowerCase())[
+    0
+  ];
   if (j1 !== undefined && j2 !== undefined) {
-    io.to(j1.id)
-      .to(j2.id)
-      .emit('charger partie', partieACharger);
+    io.to(j1.id).to(j2.id).emit('charger partie', partieACharger);
   }
 };
 
@@ -66,10 +71,10 @@ const updatePartie = (partie, caseCochee, j1, j2) => {
     partie.joueurEnCours = null;
     partie.egalite = true;
   } else {
-    partie.joueurEnCours =
-      partie.joueurEnCours.toLowerCase() === j1.toLowerCase()
-        ? j2.toLowerCase()
-        : j1.toLowerCase();
+    partie.joueurEnCours = partie.joueurEnCours.toLowerCase() ===
+      j1.toLowerCase()
+      ? j2.toLowerCase()
+      : j1.toLowerCase();
   }
   parties = [...parties.filter(p => !matchPartieJoueurs(p, j1, j2)), partie];
 };
@@ -182,15 +187,4 @@ io.on('connection', function(socket) {
     });
     io.emit('listeJoueurs', joueurs);
   });
-});
-const port = process.env.port || 5000;
-http.listen(port, function() {
-  console.log('listening on *:5000');
-});
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/client/build/index.html'));
-});
-app.get('api/parties', function(req, res) {
-  res.send(parties);
 });
