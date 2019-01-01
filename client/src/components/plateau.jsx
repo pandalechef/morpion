@@ -43,7 +43,13 @@ export default class Plateau extends Component {
     }
 
     return (
-      <Grid container>
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+        justify="center"
+        style={{ marginTop: '10px' }}
+      >
         <Grid item xs={12}>
           {statut}
         </Grid>
