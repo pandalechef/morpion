@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Plateau from '../components/plateau';
+import Morpion from '../components/morpion';
 import { chargerPartie } from '../actions/partieAction';
 
 const getJoueursFromParam = search => {
@@ -46,4 +46,4 @@ const mapDispatchToProps = (dispatch, props) => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Plateau);
+)(Morpion);

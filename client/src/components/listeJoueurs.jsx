@@ -56,7 +56,7 @@ class ListeJoueurs extends React.Component {
                 </CardActionArea>
                 <CardActions>
                   <Link
-                    to={`/morpion?j1=${utilisateur}&j2=${joueur.nom}`}
+                    to={`/jeu?j1=${utilisateur}&j2=${joueur.nom}`}
                     style={{ textDecoration: 'none' }}
                   >
                     <Button size="small" color="primary" variant="outlined">

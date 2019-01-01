@@ -3,7 +3,7 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import Login from '../containers/loginContainer';
 import { connect } from 'react-redux';
 import { updateUtilisateur } from '../actions/authentificationAction';
-import Morpion from './morpion';
+import Jeu from './jeu';
 import AuthRoute from './authRoute';
 import withSocketContext from './withSocketContext';
 import SocketContextProvider from './socketContextProvider';
@@ -16,7 +16,7 @@ const Main = props => {
     <SocketContextProvider>
       <Switch>
         <Route path="/login/" component={withSocketContext(Login)} />
-        <AuthRoute component={Morpion} />
+        <AuthRoute component={Jeu} />
       </Switch>
     </SocketContextProvider>
   );
