@@ -8,7 +8,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch, props) => ({
   updateUtilisateur: utilisateur => {
-    console.log('émission deconnexion');
     props.socket.emit('deconnexion');
     dispatch(updateUtilisateur(utilisateur));
   }

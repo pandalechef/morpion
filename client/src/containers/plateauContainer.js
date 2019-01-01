@@ -28,7 +28,6 @@ const mapDispatchToProps = (dispatch, props) => ({
     });
   },
   handleClick: (caseCochee, valeur, joueur, joueurEnCours, vainqueur) => {
-    console.log(props);
     if (
       valeur === null &&
       vainqueur == null &&
