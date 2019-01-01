@@ -26,11 +26,6 @@ class ListeJoueurs extends React.Component {
         {listeJoueursTriee
           .filter(j => j.nom.toLowerCase() !== utilisateur.toLowerCase())
           .map(joueur => (
-            // <Grid key={joueur.id} item xs={12}>
-            //   <Link to={`/morpion?j1=${nomJoueur}&j2=${joueur.nom}`}>
-            //     {joueur.nom}
-            //   </Link>
-            // </Grid>
             <Grid item xs={12} md={6} lg={4} xl={3} key={joueur.id}>
               <Card>
                 <CardActionArea>

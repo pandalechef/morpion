@@ -5,13 +5,13 @@ import { Grid, TextField, Button, Paper } from '@material-ui/core';
 class Login extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { nomJoueur: '', isOnBlur: false };
+    this.state = { utilisateur: '', isOnBlur: false };
     this.handleChange = this.handleChange.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
   }
 
   handleChange(e) {
-    this.setState({ nomJoueur: e.currentTarget.value });
+    this.setState({ utilisateur: e.currentTarget.value });
   }
 
   handleOnBlur() {
@@ -19,7 +19,7 @@ class Login extends React.Component {
   }
 
   render() {
-    const { nomJoueur, isOnBlur } = this.state;
+    const { utilisateur, isOnBlur } = this.state;
 
     if (this.props.utilisateur !== null) {
       const { from } = this.props.location.state || { from: { pathname: '/' } };
@@ -41,12 +41,12 @@ class Login extends React.Component {
               required
               label="Nom du joueur"
               onChange={this.handleChange}
-              value={nomJoueur}
+              value={utilisateur}
               margin="normal"
-              error={isOnBlur && nomJoueur === ''}
+              error={isOnBlur && utilisateur === ''}
               onBlur={this.handleOnBlur}
               helperText={
-                isOnBlur && nomJoueur === '' ? 'Champs obligatoire' : ''
+                isOnBlur && utilisateur === '' ? 'Champs obligatoire' : ''
               }
             />
           </Grid>
@@ -54,7 +54,7 @@ class Login extends React.Component {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => this.props.updateUtilisateur(nomJoueur)}
+              onClick={() => this.props.updateUtilisateur(utilisateur)}
             >
               Valider
             </Button>
