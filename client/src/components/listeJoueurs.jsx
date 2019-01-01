@@ -43,8 +43,15 @@ class ListeJoueurs extends React.Component {
                       />
                       {joueur.nom}
                     </Typography>
-                    <Typography component="p">Nombre de victoires:</Typography>
-                    <Typography component="p">Nombre de défaites:</Typography>
+                    <Typography component="p">
+                      Nombre de victoires&nbsp;:{joueur.nbVictoire || 0}
+                    </Typography>
+                    <Typography component="p">
+                      Nombre de défaites&nbsp;:{joueur.nbDefaite || 0}
+                    </Typography>
+                    <Typography component="p">
+                      Nombre d'égalité&nbsp;:{joueur.nbEgalite || 0}
+                    </Typography>
                   </CardContent>
                 </CardActionArea>
                 <CardActions>

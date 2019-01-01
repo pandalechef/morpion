@@ -91,12 +91,28 @@ const updatePartie = (partie, caseCochee, j1, j2) => {
 
 const updateScoreJoueurs = partie => {
   if (partie.vainqueur) {
-    // joueurs = [
-    //   ...joueurs.filter(j => !(j.nom === partie.j1 || j.nom === partie.j2)),
-    //   ...joueurs
-    //     .filter(j => j.nom === partie.j1 || j.nom === partie.j2)
-    //     .map(j => (j.score = j.score + 1 || 1))
-    // ];
+    const perdant = partie.j1.toLowerCase() === partie.vainqueur
+      ? partie.j2
+      : partie.j1;
+    joueurs = joueurs.map(j => {
+      if (j.nom === partie.vainqueur) {
+        j.nbVictoire = j.nbVictoire + 1 || 1;
+        return j;
+      }
+      if (j.nom === perdant) {
+        j.nbDefaite = j.nbDefaite + 1 || 1;
+        return j;
+      }
+      return j;
+    });
+  }
+  if (partie.egalite) {
+    joueurs = joueurs.map(j => {
+      if (j.nom === partie.j1 || j.nom === partie.j2) {
+        j.nbEgalite = j.nbEgalite + 1 || 1;
+      }
+      return j;
+    });
   }
 };
 
@@ -106,7 +122,6 @@ const supprimerPartiesTerminee = (j1, j2) => {
     partieEnCours[0] &&
     (partieEnCours[0].vainqueur != null || partieEnCours[0].egalite)
   ) {
-    updateScoreJoueurs(partieEnCours[0]);
     parties = parties.filter(
       p => !(p.j1 === partieEnCours[0].j1 && p.j2 === partieEnCours[0].j2)
     );
@@ -156,6 +171,7 @@ io.on('connection', function(socket) {
       vainqueur: null
     };
     supprimerPartiesTerminee(msg.j1, msg.j2);
+    io.emit('listeJoueurs', joueurs);
     const partieACharger = trouverPartieACharger(
       msg.j1,
       msg.j2,
@@ -170,6 +186,7 @@ io.on('connection', function(socket) {
     const partie = trouverPartie(j1, j2);
     if (partie) {
       updatePartie(partie, caseCochee, j1, j2);
+      updateScoreJoueurs(partie);
       envoyerNotification(j1, j2, partie);
     }
   });
