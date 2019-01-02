@@ -3,7 +3,6 @@ import {
   Grid,
   Card,
   CardActionArea,
-  CardMedia,
   CardContent,
   Typography,
   CardActions,
@@ -29,10 +28,6 @@ class ListeJoueurs extends React.Component {
             <Grid item xs={12} md={6} lg={4} xl={3} key={joueur.id}>
               <Card>
                 <CardActionArea>
-                  <CardMedia
-                    image="/static/images/cards/contemplative-reptile.jpg"
-                    title="Contemplative Reptile"
-                  />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
                       <FiberManualRecord

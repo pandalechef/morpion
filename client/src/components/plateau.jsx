@@ -1,15 +1,20 @@
 import React from 'react';
 import Morpion from '../containers/morpionContainer';
-import Dialogue from './dialogue';
+import Dialogue from '../containers/dialogueContainer';
 import { withRouter } from 'react-router-dom';
 import withSocketContext from './withSocketContext';
+import { Grid } from '@material-ui/core';
 
 const MorpionWithRouter = withSocketContext(withRouter(Morpion));
-const DialogueWithSocket = withSocketContext(Dialogue);
+const DialogueWithSocket = withSocketContext(withRouter(Dialogue));
 
 export default () => (
-  <React.Fragment>
-    <MorpionWithRouter />
-    <DialogueWithSocket />
-  </React.Fragment>
+  <Grid container direction="column" alignItems="center" justify="center">
+    <Grid item>
+      <MorpionWithRouter />
+    </Grid>
+    <Grid>
+      <DialogueWithSocket />
+    </Grid>
+  </Grid>
 );

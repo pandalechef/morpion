@@ -39,14 +39,16 @@ const matchPartieJoueurs = (partie, j1, j2) =>
     partie.j2.toLowerCase() === j2.toLowerCase());
 
 const envoyerNotification = (joueur1, joueur2, partieACharger) => {
-  const j1 = joueurs.filter(j => j.nom.toLowerCase() === joueur1.toLowerCase())[
-    0
-  ];
-  const j2 = joueurs.filter(j => j.nom.toLowerCase() === joueur2.toLowerCase())[
-    0
-  ];
+  const j1 = joueurs.filter(
+    j => j.nom.toLowerCase() === joueur1.toLowerCase()
+  )[0];
+  const j2 = joueurs.filter(
+    j => j.nom.toLowerCase() === joueur2.toLowerCase()
+  )[0];
   if (j1 !== undefined && j2 !== undefined) {
-    io.to(j1.id).to(j2.id).emit('charger partie', partieACharger);
+    io.to(j1.id)
+      .to(j2.id)
+      .emit('charger partie', partieACharger);
   }
 };
 
@@ -81,19 +83,18 @@ const updatePartie = (partie, caseCochee, j1, j2) => {
     partie.joueurEnCours = null;
     partie.egalite = true;
   } else {
-    partie.joueurEnCours = partie.joueurEnCours.toLowerCase() ===
-      j1.toLowerCase()
-      ? j2.toLowerCase()
-      : j1.toLowerCase();
+    partie.joueurEnCours =
+      partie.joueurEnCours.toLowerCase() === j1.toLowerCase()
+        ? j2.toLowerCase()
+        : j1.toLowerCase();
   }
   parties = [...parties.filter(p => !matchPartieJoueurs(p, j1, j2)), partie];
 };
 
 const updateScoreJoueurs = partie => {
   if (partie.vainqueur) {
-    const perdant = partie.j1.toLowerCase() === partie.vainqueur
-      ? partie.j2
-      : partie.j1;
+    const perdant =
+      partie.j1.toLowerCase() === partie.vainqueur ? partie.j2 : partie.j1;
     joueurs = joueurs.map(j => {
       if (j.nom === partie.vainqueur) {
         j.nbVictoire = j.nbVictoire + 1 || 1;
@@ -188,6 +189,14 @@ io.on('connection', function(socket) {
       updatePartie(partie, caseCochee, j1, j2);
       updateScoreJoueurs(partie);
       envoyerNotification(j1, j2, partie);
+    }
+  });
+
+  socket.on('envoi message', msg => {
+    console.log('envoi message: ', msg);
+    const destinataire = joueurs.filter(j => j.nom === msg.to);
+    if (destinataire.length > 0) {
+      io.to(destinataire[0].id).emit('message recu', msg);
     }
   });
 
